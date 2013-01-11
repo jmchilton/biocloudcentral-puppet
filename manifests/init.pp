@@ -25,6 +25,10 @@ class biocloudcentral(
     require => User["$biocloudcentral::config::user"],
   }
 
+  package { "libpq-dev":
+    ensure => "present",
+  }
+
   vcsrepo { "$biocloudcentral::config::destination":
     ensure => present,
     provider => git,
@@ -37,11 +41,11 @@ class biocloudcentral(
   exec { 'biocloud_virtualenv':
     command => "/bin/bash -c 'virtualenv --no-site-packages .; source bin/activate; pip install -r requirements.txt'",
     creates => "$biocloudcentral::config::destination/bin",
-    require => Vcsrepo["$biocloudcentral::config::destination"],
+    require => [Vcsrepo["$biocloudcentral::config::destination"], Package["libpq-dev"],],
     user => "$biocloudcentral::config::user",
   }
 
-  file { "$biocloudcentral::config::destination/biocloudcentral/local_setting.py":
+  file { "$biocloudcentral::config::destination/biocloudcentral/local_settings.py":
     content => template("biocloudcentral/local_settings.py.erb"),
     require => Vcsrepo["$horizon::config::destination"],
     owner => "$horizon::config::user",    
