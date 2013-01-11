@@ -1,0 +1,1 @@
+Puppet module for deploy biocloudcentral. Requires vcsrepo module https://forge.puppetlabs.com/puppetlabs/vcsrepo.
